@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="assets/css/elementui.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>两点间距离</title>
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
+    <style>
+        html,
+        body,
+        #container {
+            height: 100%;
+        }
+    </style>
+    <title>Demo</title>
+</head>
+<title>地图显示</title>
+<style>
+    html,
+    body,
+    #container {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<body>
+    <div id="container"></div>
+    <div class='info' style='min-width:15rem;'>可拖动Marker调整位置</div>
+    <!-- 加载地图JSAPI脚本 -->
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=e85d907806f553b901cb8f9349a767cf"></script>
+    <script>
+        var map = new AMap.Map('container', {
+            resizeEnable: true, //是否监控地图容器尺寸变化
+            zoom: 11, //初始化地图层级
+            center: [116.397428, 39.90923] //初始化地图中心点
+        });
+    </script>
+    <script type="text/javascript">
+        //初始化地图对象，加载地图
+        var map = new AMap.Map("container", {
+            resizeEnable: true,
+            zoom: 13
+        });
+        var m1 = new AMap.Marker({
+            map: map,
+            draggable: true,
+            position: new AMap.LngLat(116.368904, 39.923423)
+        });
+        var m2 = new AMap.Marker({
+            map: map,
+            draggable: true,
+            position: new AMap.LngLat(116.387271, 39.922501)
+        });
+        map.setFitView();
+
+        var line, text;
+
+        function computeDis() {
+            var p1 = m1.getPosition();
+            var p2 = m2.getPosition();
+            var textPos = p1.divideBy(2).add(p2.divideBy(2));
+            var distance = Math.round(p1.distance(p2));
+            var path = [p1, p2];
+            if (!line) {
+                line = new AMap.Polyline({
+                    map: map,
+                    strokeColor: '#80d8ff',
+                    isOutline: true,
+                    outlineColor: 'white',
+                    path: path
+                });
+            } else {
+                line.setPath(path);
+            }
+            if (!text) {
+                text = new AMap.Text({
+                    text: '两点相距' + distance + '米',
+                    position: textPos,
+                    map: map,
+                    style: {
+                        'background-color': '#29b6f6',
+                        'border-color': '#e1f5fe',
+                        'font-size': '12px'
+                    }
+                })
+            } else {
+                text.setText('两点相距' + distance + '米')
+                text.setPosition(textPos)
+            }
+        }
+        computeDis();
+        m1.on('dragging', computeDis)
+        m2.on('dragging', computeDis)
+    </script>
+
+    <script src="assets/js/axios.min.js"></script>
+    <script src="assets/js/common.js"></script>
+    <script src="assets/js/vue.js"></script>
+    <script src="assets/js/elementui.js"></script>
+    <script src="viewmodels/demo.js"></script>
+
+</body>
+
+</html>
